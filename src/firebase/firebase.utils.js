@@ -40,6 +40,8 @@ const config = {
         return userRef;
       };
 
+
+  //code below was a one time addition of store data.
       export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
         const collectionRef = firestore.collection(collectionKey);
         console.log(collectionRef);
@@ -52,7 +54,29 @@ const config = {
 
         return await batch.commit();
 
+        
+//convertCollectionsSnapshotToMap
       };
+  //code above was a one time addition of store data.
+
+      export const convertCollectionsSnapshotToMap = collections => {
+        const transformedCollection = collections.docs.map(doc => {
+          const { title, items } = doc.data();
+          
+          return {
+            routeName: encodeURI(title.toLowerCase()),
+            id: doc.id,
+            title,
+            items
+          };
+        });
+        
+        return transformedCollection.reduce((accumulator, collection) =>{
+          accumulator[collection.title.toLowerCase()] = collection;
+          return accumulator;
+        } , {});
+      }
+
 
       firebase.initializeApp(config);
 
